@@ -1,12 +1,13 @@
 from app import app
-from flask import jsonify, abort
+from flask import jsonify, abort, render_template, send_from_directory, url_for
 
 @app.route('/')
 def index():
-  return "Task.me landing page"
+  return render_template("index.html")
 
-@app.route('/tasks', methods=['GET'])
-def get_sorted_tasks():
+@app.route('/tasks/', methods=['GET'])
+@app.route('/tasks/<int:date>', methods=['GET'])
+def get_sorted_tasks(date):
   tasks = ['task A', 'task B', 'task C']
   return jsonify(tasks)
 
