@@ -17,7 +17,12 @@ $ virtualenv venv
 $ pip install -r requirements.txt
 ```
 
-4. Run the app
+4. Run virtual environment
+```bash
+$ source venv/bin/activate
+```
+
+5. Run the app
 ```bash
 $ chmod 777 run.py
 $ ./run.py
