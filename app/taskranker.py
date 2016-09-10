@@ -78,27 +78,40 @@ slot5 = {'slot_id'  : 005,
 TIMESLOTS = [slot1, slot2, slot3, slot4, slot5]
 
 # to be used in ranktask(ALLTASK)
-def _findTaskById(id):
-  for i in ALLTASK:
+def _findTaskById(id, allTasks):
+  for i in allTasks:
     if i['task_id'] == id:
       return i
   return {}
 
 # find the next available slot
-def _findNextSlot():
-  for i in TIMESLOTS:
+def _findNextSlot(timeSlots):
+  for i in timeSlots:
     if i['task_id'] == 000:
       return i
   return {}
 
+# return a dictionary containing a task details based on its id
+def findTaskDetailsById(id, tasks):
+  target = {}
+  for t in tasks:
+    if t['task_id'] == id:
+      target['task_id'] = t['task_id']
+      target['name'] = t['name']
+      target['deadline'] = t['deadline']
+      target['priority'] = t['priority']
+      target['length'] = t['length']
+      target['slot_id'] = t['slot_id']
+  return target
+
 '''
 Goal: assign ALL tasks (if possible) to a free slot
 '''
-def ranktask(ALLTASK):
+def ranktask(allTasks, timeSlots):
   res = []
 
   # sort the queue by deadline: most -> least imminent 
-  taskqueue =  deque(sorted(ALLTASK, key=operator.itemgetter('deadline')))
+  taskqueue =  deque(sorted(allTasks, key=operator.itemgetter('deadline')))
 
   # for i in taskqueue: print i
   # print taskqueue[0]
@@ -107,7 +120,7 @@ def ranktask(ALLTASK):
 
   while len(taskqueue) > 0:
     # print taskqueue
-    slot = _findNextSlot()
+    slot = _findNextSlot(timeSlots)
     # assign the most immminent event to an available timeslot
     if slot != {}:
       if slot['length'] >= taskqueue[0]['length']:
@@ -124,13 +137,17 @@ def ranktask(ALLTASK):
           # that of the occupying task,
           # replace
           if taskqueue[0]['length'] >= visited[-1]['length']:
-            taskqueue.append(_findTaskById(visited[-1]['task_id']))
+            taskqueue.append(_findTaskById(visited[-1]['task_id'], allTasks))
             visited[-1]['task_id'] = taskqueue[0]['task_id']
             taskqueue.popleft()
             visited.pop()
 
-  for slot in TIMESLOTS: print slot
+  for slot in timeSlots: 
+    res.append(slot)
+
+  return res
 
 
 if __name__ == '__main__':
-  ranktask(ALLTASK)
+  print ranktask(ALLTASK, TIMESLOTS)
+  print findTaskDetailsById(2, ALLTASK)
