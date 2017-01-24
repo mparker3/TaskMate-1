@@ -27,3 +27,5 @@
   $ chmod 777 run.py
   $ ./run.py
   ```
+  
+  %long live PennApps 2016%
